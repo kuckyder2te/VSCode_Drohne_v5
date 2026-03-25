@@ -1,62 +1,43 @@
 #include "motors.h"
-
 #include "pins.h"
+
 #include <Arduino.h>
 #include <RP2040_PWM.h>
-#include <Servo.h>
 
-namespace Motors
-{
+namespace Motors {
 
-    static Servo esc;
+    // PWM Objekt (kein Pointer!)
+    static RP2040_PWM motor(PIN_MOTOR_FL, 50.0f, 5.0f);
+
     static float throttle = 0.0f;
 
-    const int motorPin = PIN_MOTOR_FL;
+    const float pwmFreq = 50.0f;
 
-    void init()
-    {
-       
-    esc.attach(motorPin, 1000, 2000);
+    void init() {
+        // ESC sicher auf Minimum setzen
+        motor.setPWM(PIN_MOTOR_FL, pwmFreq, 5.0f); // ~1000 µs
 
-    // MAX senden
-    esc.writeMicroseconds(2000);
-    delay(3000);
-
-    // MIN senden
-    esc.writeMicroseconds(1000);
-    delay(3000);
-
+        // ESC Zeit zum Armen geben
+        delay(3000);
     }
 
-    void update()
-    {
-        int pulse = 1000 + (throttle * 1000); // 1000–2000 µs
-        esc.writeMicroseconds(pulse);
+    void update() {
+        // Throttle begrenzen
+        if (throttle < 0.0f) throttle = 0.0f;
+        if (throttle > 1.0f) throttle = 1.0f;
+
+        // µs berechnen (1000–2000)
+        float pulseWidth = 1000.0f + (throttle * 1000.0f);
+
+        // Duty Cycle berechnen (20ms Periode → 50 Hz)
+        float dutyCycle = (pulseWidth / 20000.0f) * 100.0f;
+
+        // PWM setzen
+        motor.setPWM(PIN_MOTOR_FL, pwmFreq, dutyCycle);
     }
 
-    void setMotorSpeeds(float m1, float, float, float)
-    {
+    void setMotorSpeeds(float m1, float, float, float) {
         throttle = m1;
     }
-
-    // static float m1, m2, m3, m4;
-    // static RP2040_PWM* pwm = nullptr;
-    // static float throttle = 0.0f;
-
-    // const int motorPin = PIN_MOTOR_FL;   // ← DAS ist die fehlende Zeile
-    // const float pwmFreq = 50.0f;
-
-    // void init() {}
-
-    // void update() {
-    //     // später PWM setzen
-    // }
-
-    // void setMotorSpeeds(float _m1, float _m2, float _m3, float _m4) {
-    //     m1 = _m1;
-    //     m2 = _m2;
-    //     m3 = _m3;
-    //     m4 = _m4;
-    // }
 
 }

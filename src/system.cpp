@@ -26,7 +26,7 @@ namespace System
 
     void update()
     {
-        delay(1000);
+        delay(100);
 
         Serial.println("System update");
 
