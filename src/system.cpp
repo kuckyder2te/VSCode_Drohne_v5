@@ -26,6 +26,10 @@ namespace System
 
     void update()
     {
+        delay(1000);
+
+        Serial.println("System update");
+
         // 1. Eingaben lesen
         Bluetooth::update();
 

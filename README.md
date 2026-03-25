@@ -157,6 +157,10 @@ Projekt wird iterativ aufgebaut mit Fokus auf:
 * Motor-PWM testen
 * Closed-Loop Regelung vorbereiten
 
+## Links
+PICO 2040 PIN Out    https://datacapturecontrol.com/articles/io-devices/microcontrollers/rpi-pico
+ESC and Brushless    https://howtomechatronics.com/tutorials/arduino/arduino-brushless-motor-control-tutorial-esc-bldc/   
+
 ---
 
 ## 📝 Lizenz
